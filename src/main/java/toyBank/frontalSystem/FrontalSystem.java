@@ -26,7 +26,8 @@ public class FrontalSystem {
                 throw new RuntimeException(e);
             }
         }
+        Request request = requests.pollFirst();
         notifyAll();
-        return requests.pollFirst();
+        return request;
     }
 }
