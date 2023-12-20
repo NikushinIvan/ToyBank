@@ -4,13 +4,13 @@ import toyBank.bankBackSystem.BankBackSystem;
 import toyBank.frontalSystem.FrontalSystem;
 import toyBank.request.Request;
 
-import static java.lang.Thread.currentThread;
-
 public class RequestHandler implements Runnable {
     private final FrontalSystem frontalSystem;
     private final BankBackSystem bankBackSystem;
+    private final int numberRequestHandler;
 
-    public RequestHandler(FrontalSystem frontalSystem, BankBackSystem bankBackSystem) {
+    public RequestHandler(FrontalSystem frontalSystem, BankBackSystem bankBackSystem, int numberRequestHandler) {
+        this.numberRequestHandler = numberRequestHandler;
         this.frontalSystem = frontalSystem;
         this.bankBackSystem = bankBackSystem;
     }
@@ -24,7 +24,7 @@ public class RequestHandler implements Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(request + " is processed by " + currentThread().getName());
+            System.out.println(request + " is processed by " + "RequestHandler" + numberRequestHandler);
             bankBackSystem.executionRequest(request);
         }
     }
