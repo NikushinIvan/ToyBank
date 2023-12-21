@@ -11,7 +11,7 @@ public class StorageSystem implements Callable<Long> {
 
     public StorageSystem(int numberSystem) {
         this.numberSystem = numberSystem;
-        this.balance = new AtomicLong(random.nextInt(5_000) + 5_000);
+        this.balance = new AtomicLong((random.nextInt(5) + 1) * 1_000);
     }
 
     @Override

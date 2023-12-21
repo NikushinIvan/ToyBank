@@ -16,7 +16,7 @@ public class Client implements Runnable {
         this.numberClient = numberClient;
         Random random = new Random();
         this.requestType = RequestType.getRandomRequestType();
-        this.amount = random.nextInt(50_000);
+        this.amount = (random.nextInt(10) + 1) * 1_000;
         this.frontalSystem = frontalSystem;
     }
 
