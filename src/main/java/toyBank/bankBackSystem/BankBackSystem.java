@@ -2,46 +2,40 @@ package toyBank.bankBackSystem;
 
 import toyBank.request.Request;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class BankBackSystem {
-    private final AtomicLong balance = new AtomicLong();
+    private final AtomicLong balance;
 
-    public BankBackSystem() {
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
-        var storageSystems = List.of(
-                new StorageSystem(1),
-                new StorageSystem(2),
-                new StorageSystem(3));
-
-        try {
-            var futures = executorService.invokeAll(storageSystems);
-            for (var future : futures) {
-                balance.addAndGet(future.get());
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+    public BankBackSystem(AtomicLong balance) {
+        System.out.println("BANK BALANCE: " + balance.get());
+        this.balance = balance;
     }
 
-    public synchronized void executionRequest(Request request) {
+    public void executionRequest(Request request) {
         switch (request.getRequestType()) {
             case CREDIT:
                 if (balance.get() > request.getAmount()) {
-                    balance.addAndGet(-request.getAmount());
-                    System.out.println(request + " COMPLETED. Balance: " + balance);
+                    changeBalance(-request.getAmount());
+                    System.out.println(request + " COMPLETED. Balance: " + balance.get());
                 } else {
-                    System.out.println(request + " REJECTED. Balance: " + balance);
+                    System.out.println(request + " REJECTED. Balance: " + balance.get());
                 }
                 break;
             case REPAYMENT:
-                balance.addAndGet(request.getAmount());
-                System.out.println(request + " COMPLETED. Balance: " + balance);
+                changeBalance(request.getAmount());
+                System.out.println(request + " COMPLETED. Balance: " + balance.get());
                 break;
+        }
+    }
+
+    public void changeBalance(int amount) {
+        boolean success = false;
+        while (!success) {
+            long value = balance.get();
+            long newValue = value + amount;
+
+            success = balance.compareAndSet(value, newValue);
         }
     }
 }

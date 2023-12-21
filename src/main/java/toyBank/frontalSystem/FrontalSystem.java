@@ -16,7 +16,7 @@ public class FrontalSystem {
         }
     }
 
-    public synchronized Request getRequest() {
+    public Request getRequest() {
         try {
             return requests.take();
         } catch (InterruptedException e) {
